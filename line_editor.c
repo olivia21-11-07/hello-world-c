@@ -35,6 +35,7 @@ void insertLine()
     int position;
     char text[MAX_LENGTH];
     int i;
+    char *newLine;
 
     if (lineCount >= MAX_LINES)
     {
@@ -57,22 +58,25 @@ void insertLine()
 
     text[strcspn(text, "\n")] = '\0';
 
-    /* Shift lines down */
-    for (i = lineCount; i >= position; i--)
-    {
-        lines[i] = lines[i - 1];
-    }
+    /* Allocate memory for the new line first */
+    newLine = malloc(strlen(text) + 1);
 
-    /* Allocate memory for new line */
-    lines[position - 1] = malloc(strlen(text) + 1);
-
-    if (lines[position - 1] == NULL)
+    if (newLine == NULL)
     {
         printf("Memory allocation failed.\n");
         return;
     }
 
-    strcpy(lines[position - 1], text);
+    strcpy(newLine, text);
+
+    /* Shift existing lines down */
+    for (i = lineCount; i >= position; i--)
+    {
+        lines[i] = lines[i - 1];
+    }
+
+    /* Insert new line */
+    lines[position - 1] = newLine;
 
     lineCount++;
 
@@ -112,6 +116,9 @@ void deleteLine()
 
     lineCount--;
 
+    /* Clear the unused last pointer */
+    lines[lineCount] = NULL;
+
     printf("Line deleted successfully.\n");
 }
 
@@ -149,7 +156,6 @@ void loadFile()
     char filename[100];
     char text[MAX_LENGTH];
     FILE *file;
-
     int i;
 
     printf("Enter file name: ");
@@ -168,6 +174,7 @@ void loadFile()
     for (i = 0; i < lineCount; i++)
     {
         free(lines[i]);
+        lines[i] = NULL;
     }
 
     lineCount = 0;
@@ -197,7 +204,7 @@ void loadFile()
     printf("File loaded successfully.\n");
 }
 
-/* Function to search for a word */
+/* Function to search for a word or phrase */
 void searchText()
 {
     char word[100];
@@ -207,7 +214,7 @@ void searchText()
     getchar();
 
     printf("Enter word or phrase to search: ");
-    fgets(word, 100, stdin);
+    fgets(word, sizeof(word), stdin);
 
     word[strcspn(word, "\n")] = '\0';
 
@@ -263,6 +270,7 @@ int main()
     while (1)
     {
         printf("\n> ");
+
         scanf("%19s", command);
 
         if (strcmp(command, "insert") == 0)
