@@ -313,3 +313,10 @@ int main()
 
     return 0;
 }
+
+## Collaboration Log
+
+- **Partner:** Monisha
+- **GitHub:** [vmonisha1018-pixel](https://github.com/vmonisha1018-pixel)
+- **What we built:** Added a `greet()` function to the Hello World C program that greets a person by name.
+- **What I learned:** I learned how to use VS Code Live Share to collaborate and edit code with a partner in real time, and how GitLens helps track code changes and commits.
